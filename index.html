@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lejo qasje te të dhënat e pajisjes</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Pershendetje!</h1>
+    <p>Lejoni pronarin e ueb sajtit të ketë qasje në të dhënat e pajisjes tuaj.</p>
+    <button id="allowButton">Lejo</button>
+
+    <script>
+        document.getElementById("allowButton").addEventListener("click", function() {
+            if ("permissions" in navigator) {
+                navigator.permissions.query({ name: 'geolocation' })
+                    .then(function(permissionStatus) {
+                        if (permissionStatus.state === 'granted') {
+                            // Përdoruesi ka dhënë lejen, bëni diçka me të dhënat e pajisjes dhe dërgojini te pronari i ueb sajtit
+                            sendDeviceData();
+                        } else {
+                            console.log("Përdoruesi nuk i ka dhënë lejen për të dhënat e pajisjes.");
+                        }
+                    })
+                    .catch(function(error) {
+                        console.log("Gabim gjatë kërkesës së lejes së pajisjes: " + error);
+                    });
+            } else {
+                console.log("Lejet e pajisjes nuk suportohen në shfletuesin tuaj.");
+            }
+        });
+
+        function sendDeviceData() {
+            // Këtu mund të dërgoni të dhënat e pajisjes te pronari i ueb sajtit përmes një kërkesë HTTP
+            $.ajax({
+                url: "https://www.example.com/data-endpoint",
+                method: "POST",
+                data: {
+                    deviceData: "Të dhënat e pajisjes"
+                },
+                success: function(response) {
+                    console.log("Të dhënat e pajisjes u dërguan me sukses te pronari i ueb sajtit.");
+                },
+                error: function(error) {
+                    console.log("Gabim gjatë dërgimit të të dhënave të pajisjes: " + error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
